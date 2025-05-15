@@ -1,8 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
+import { EntityWithoutId } from "@/types";
 
-export default function AddEntityForm() {
+interface AddEntityFormProps {
+  onAdd: (entity: EntityWithoutId) => void;
+}
+
+export default function AddEntityForm({ onAdd }: AddEntityFormProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [genre, setGenre] = useState("");
@@ -19,33 +24,27 @@ export default function AddEntityForm() {
       return;
     }
 
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/games`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, description, genre, imageUrl, price: Number(price) }),
-      });
+    const newEntity: EntityWithoutId = {
+      name,
+      description,
+      genre,
+      imageUrl,
+      price: Number(price)
+    };
 
-      if (response.ok) {
-        const added = await response.json();
-        alert(`Game "${added.name}" added successfully!`);
-        // ✅ Redirect to homepage
-        window.location.href = "/";
-      } else {
-        const err = await response.json();
-        alert("Error: " + err.error);
-      }
+    try {
+      onAdd(newEntity);
+      
+      // Clear form
+      setName("");
+      setDescription("");
+      setGenre("");
+      setImageUrl("");
+      setPrice("");
     } catch (error) {
       console.error("Failed to submit:", error);
       alert("Server error while adding game.");
     }
-
-    // Clear form
-    setName("");
-    setDescription("");
-    setGenre("");
-    setImageUrl("");
-    setPrice("");
   };
 
   return (
