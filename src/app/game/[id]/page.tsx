@@ -1,4 +1,7 @@
 "use client";
+
+export const dynamicParams = true;
+
 import { useOfflineSync } from "@/hooks/useOfflineSync";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
